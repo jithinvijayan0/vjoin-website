@@ -22,6 +22,10 @@ document.getElementById("leadForm").addEventListener("submit", function(e){
     // SEND TO GOOGLE SHEETS
     fetch("https://script.google.com/macros/s/AKfycbx0m5F1mViDE400GEyUrwUUAne6EOdyMQvRw23vtulBtmt2B3l_6rjwp-tEdriMdbn9Zw/exec", {
         method: "POST",
+        mode: "no-cors",
+    headers: {
+        "Content-Type": "application/json"
+    },
         body: JSON.stringify(data)
     });
 
