@@ -13,32 +13,32 @@
 
 <body>
 <script>
-document.getElementById("leadForm").addEventListener("submit", function(e){
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("leadForm").addEventListener("submit", function(e){
+        e.preventDefault();
 
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
 
-    // SEND TO GOOGLE SHEETS
-    fetch("https://script.google.com/macros/s/AKfycbx0m5F1mViDE400GEyUrwUUAne6EOdyMQvRw23vtulBtmt2B3l_6rjwp-tEdriMdbn9Zw/exec", {
-        method: "POST",
-        mode: "no-cors",
-    headers: {
-        "Content-Type": "application/json"
-    },
-        body: JSON.stringify(data)
-    });
+        fetch("YOUR_URL", {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
 
-    // WHATSAPP MESSAGE
-    const message = `New Lead:%0A
+        const message = `New Lead:%0A
 Name: ${data.name}%0A
 Phone: ${data.phone}%0A
 Country: ${data.country}%0A
 Course: ${data.course}`;
 
-    window.open(`https://wa.me/+917994685101?text=${message}`, "_blank");
+        window.open(`https://wa.me/917994685101?text=${message}`, "_blank");
 
-    alert("Application submitted successfully!");
+        alert("Application submitted successfully!");
+    });
 });
 </script>
 <header>
