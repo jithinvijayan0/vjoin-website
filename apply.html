@@ -12,7 +12,31 @@
 </head>
 
 <body>
+<script>
+document.getElementById("leadForm").addEventListener("submit", function(e){
+    e.preventDefault();
 
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+    // SEND TO GOOGLE SHEETS
+    fetch("YOUR_GOOGLE_SCRIPT_URL", {
+        method: "POST",
+        body: JSON.stringify(data)
+    });
+
+    // WHATSAPP MESSAGE
+    const message = `New Lead:%0A
+Name: ${data.name}%0A
+Phone: ${data.phone}%0A
+Country: ${data.country}%0A
+Course: ${data.course}`;
+
+    window.open(`https://wa.me/+917994685101?text=${message}`, "_blank");
+
+    alert("Application submitted successfully!");
+});
+</script>
 <header>
 
 <!-- Logo Section -->
@@ -41,26 +65,23 @@
 
 <h2>Student Application Form</h2>
 
-<form>
+<form id="leadForm">
+<input type="text" name="name" placeholder="Full Name" required>
+<input type="text" name="phone" placeholder="Phone Number" required>
+<input type="email" name="email" placeholder="Email" required>
 
-<input type="text" placeholder="Full Name">
-
-<input type="email" placeholder="Email">
-
-<input type="text" placeholder="Phone Number">
-
-<select>
-<option>Preferred Country</option>
+<select name="country">
 <option>Malaysia</option>
 <option>UK</option>
 <option>Australia</option>
 <option>Canada</option>
 </select>
 
-<textarea placeholder="Message"></textarea>
+<input type="text" name="course" placeholder="Preferred Course">
 
-<button>Submit Application</button>
+<textarea name="message" placeholder="Message"></textarea>
 
+<button type="submit">Submit</button>
 </form>
 
 </section>
