@@ -1,0 +1,195 @@
+body{
+font-family:'Poppins', sans-serif;
+margin:0;
+background:#f4f6f9;
+}
+
+/* NAVBAR */
+
+.navbar{
+background:#0c2340;
+padding:10px 40px;
+box-shadow:0 2px 10px rgba(0,0,0,0.15);
+}
+
+.nav-container{
+display:flex;
+align-items:center;
+justify-content:space-between;
+max-width:1200px;
+margin:auto;
+}
+
+/* LOGO */
+
+.logo{
+height:80px;
+width:auto;
+}
+
+/* NAV LINKS */
+
+.nav-links a{
+color:white;
+margin-left:25px;
+text-decoration:none;
+font-weight:600;
+font-size:16px;
+transition:0.3s;
+}
+
+.nav-links a:hover{
+color:#d4a24c;
+}
+
+/* HERO SECTION */
+
+.hero{
+height:500px;
+background:url("images/hero.avif");
+background-size:cover;
+background-position:center;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+color:white;
+position:relative;
+}
+
+.hero::after{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+}
+
+.hero-content{
+position:relative;
+z-index:2;
+}
+
+.hero h2{
+font-size:48px;
+margin-bottom:15px;
+}
+
+.hero p{
+font-size:20px;
+margin-bottom:25px;
+}
+
+/* HERO BUTTONS */
+
+.hero-btn{
+background:#d4a24c;
+padding:12px 25px;
+color:white;
+text-decoration:none;
+border-radius:5px;
+margin-right:10px;
+}
+
+.hero-btn2{
+background:white;
+color:#0c2340;
+padding:12px 25px;
+text-decoration:none;
+border-radius:5px;
+}
+
+/* CONTENT SECTION */
+
+.section{
+padding:60px 30px;
+text-align:center;
+}
+
+/* CARDS */
+
+.cards{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:20px;
+}
+
+.card{
+background:white;
+padding:10px;
+width:250px;
+border-radius:8px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+cursor:pointer;
+transition:0.3s;
+}
+
+.card:hover{
+transform:scale(1.05);
+}
+/* FORMS */
+
+form input,
+form select,
+form textarea{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+background:#d4a24c;
+color:white;
+border:none;
+padding:12px;
+border-radius:5px;
+cursor:pointer;
+}
+
+/* FOOTER */
+
+footer{
+background:#0c2340;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+/* WHATSAPP BUTTON */
+
+.whatsapp{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#25D366;
+color:white;
+font-size:28px;
+padding:15px 18px;
+border-radius:50%;
+text-decoration:none;
+box-shadow:0 5px 10px rgba(0,0,0,0.2);
+}
+
+.whatsapp:hover{
+background:#1ebe5d;
+}
+.country-img{
+width:80%;
+height:250px;
+object-fit:cover;
+border-radius:8px;
+margin-bottom:10px;
+}
+.country-title{
+margin-top:50px;
+margin-bottom:20px;
+color:#0c2340;
+font-size:28px;
+border-left:5px solid #d4a24c;
+padding-left:10px;
+}
