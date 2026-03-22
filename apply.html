@@ -20,7 +20,7 @@ document.getElementById("leadForm").addEventListener("submit", function(e){
     const data = Object.fromEntries(formData.entries());
 
     // SEND TO GOOGLE SHEETS
-    fetch("YOUR_GOOGLE_SCRIPT_URL", {
+    fetch("https://script.google.com/macros/s/AKfycbx0m5F1mViDE400GEyUrwUUAne6EOdyMQvRw23vtulBtmt2B3l_6rjwp-tEdriMdbn9Zw/exec", {
         method: "POST",
         body: JSON.stringify(data)
     });
