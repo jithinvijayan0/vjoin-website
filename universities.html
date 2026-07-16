@@ -48,7 +48,10 @@
 
 <h2>Study Destinations</h2>
 
+<p id="viewAllLink" style="display:none;"><a href="universities.html">&larr; View All Destinations</a></p>
+
 <!-- MALAYSIA -->
+<div class="country-block" data-country="malaysia">
 <h2 class="country-title">Malaysia</h2>
 
 <div class="cards">
@@ -133,8 +136,11 @@
 
 </div>
 
+</div>
+
 
 <!-- UK -->
+<div class="country-block" data-country="uk">
 <h2 class="country-title">United Kingdom</h2>
 
 <div class="cards">
@@ -153,8 +159,11 @@
 
 </div>
 
+</div>
+
 
 <!-- AUSTRALIA -->
+<div class="country-block" data-country="australia">
 <h2 class="country-title">Australia</h2>
 
 <div class="cards">
@@ -167,8 +176,11 @@
 
 </div>
 
+</div>
+
 
 <!-- CANADA -->
+<div class="country-block" data-country="canada">
 <h2 class="country-title">Canada</h2>
 
 <div class="cards">
@@ -181,10 +193,29 @@
 
 </div>
 
+</div>
+
 </section>
 <footer>
 <p>© 2026 V JOIN Educational Consultancy Pvt Ltd</p>
 </footer>
+
+<script>
+(function(){
+    const params = new URLSearchParams(window.location.search);
+    const country = params.get("country");
+    if (!country) return;
+
+    document.querySelectorAll(".country-block").forEach(function(block){
+        if (block.dataset.country !== country) {
+            block.style.display = "none";
+        }
+    });
+
+    const viewAll = document.getElementById("viewAllLink");
+    if (viewAll) viewAll.style.display = "block";
+})();
+</script>
 
 </body>
 </html>
