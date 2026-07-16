@@ -49,21 +49,114 @@
 
 <h2>Student Success Stories</h2>
 
-<div class="card">
+<div class="cards" id="testimonialCards">
+
+<div class="testimonial">
+<div class="testimonial-avatar">RN</div>
 <h3>Rahul Nair</h3>
-<p>Admitted to Taylor's University Malaysia</p>
+<span class="testimonial-badge">Taylor's University, Malaysia</span>
+<p>"V JOIN guided me through every step of my application and visa process. I couldn't have done it without their support."</p>
 </div>
 
-<div class="card">
+<div class="testimonial">
+<div class="testimonial-avatar">NJ</div>
 <h3>Neha Joseph</h3>
-<p>Received UK student visa</p>
+<span class="testimonial-badge">UK Student Visa</span>
+<p>"The counseling team made a stressful process feel simple. My visa was approved without any hiccups."</p>
 </div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<h2>Share Your Experience</h2>
+<p>Studied abroad with V JOIN? Tell future students about it. Your feedback is reviewed before it appears above.</p>
+
+<form id="feedbackForm" style="max-width:450px;margin:0 auto;">
+<input type="text" name="name" placeholder="Full Name" maxlength="60" required>
+<input type="text" name="university" placeholder="University / Visa Type" maxlength="80" required>
+<textarea name="message" placeholder="Share your experience with V JOIN" maxlength="400" required></textarea>
+<button type="submit">Submit Feedback</button>
+</form>
 
 </section>
 
 <footer>
 <p>© 2026 V JOIN Educational Consultancy Pvt Ltd</p>
 </footer>
+
+<script>
+const FEEDBACK_SCRIPT_URL = "PASTE_YOUR_FEEDBACK_APPS_SCRIPT_URL_HERE";
+
+function escapeText(str){
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.textContent;
+}
+
+function initialsFor(name){
+    return name.trim().split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+}
+
+function loadApprovedFeedback(){
+    if (FEEDBACK_SCRIPT_URL.startsWith("PASTE_")) return;
+
+    fetch(FEEDBACK_SCRIPT_URL)
+        .then(res => res.json())
+        .then(list => {
+            const container = document.getElementById("testimonialCards");
+            list.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "testimonial";
+
+                const avatar = document.createElement("div");
+                avatar.className = "testimonial-avatar";
+                avatar.textContent = initialsFor(item.name || "?");
+
+                const name = document.createElement("h3");
+                name.textContent = escapeText(item.name || "");
+
+                const badge = document.createElement("span");
+                badge.className = "testimonial-badge";
+                badge.textContent = escapeText(item.university || "");
+
+                const quote = document.createElement("p");
+                quote.textContent = `"${escapeText(item.message || "")}"`;
+
+                card.append(avatar, name, badge, quote);
+                container.appendChild(card);
+            });
+        })
+        .catch(() => {});
+}
+
+document.getElementById("feedbackForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    if (FEEDBACK_SCRIPT_URL.startsWith("PASTE_")) {
+        alert("Feedback collection isn't set up yet. Please contact us directly for now.");
+        return;
+    }
+
+    const data = Object.fromEntries(new FormData(this).entries());
+
+    fetch(FEEDBACK_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    }).then(() => {
+        alert("Thank you! Your feedback has been submitted and will appear here once reviewed.");
+        this.reset();
+    }).catch(() => {
+        alert("Something went wrong. Please try again.");
+    });
+});
+
+loadApprovedFeedback();
+</script>
 
 </body>
 </html>
