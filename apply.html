@@ -7,6 +7,11 @@
 
 <meta name="description" content="Apply for study abroad programs through V JOIN Educational Consultancy.">
 
+<meta property="og:title" content="Apply | V JOIN Educational Consultancy">
+<meta property="og:description" content="Apply for study abroad programs through V JOIN Educational Consultancy.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="images/logo.png">
+
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="images/favicon.png" sizes="32x32">
 <link rel="icon" href="images/favicon.png" sizes="16x16">
@@ -17,20 +22,25 @@
 <body>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("leadForm").addEventListener("submit", function(e){
+    document.getElementById("leadForm").addEventListener("submit", async function(e){
         e.preventDefault();
 
         const formData = new FormData(this);
         const data = Object.fromEntries(formData.entries());
 
-        fetch("https://script.google.com/macros/s/AKfycbx0m5F1mViDE400GEyUrwUUAne6EOdyMQvRw23vtulBtmt2B3l_6rjwp-tEdriMdbn9Zw/exec", {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
+        try {
+            await fetch("https://script.google.com/macros/s/AKfycbx0m5F1mViDE400GEyUrwUUAne6EOdyMQvRw23vtulBtmt2B3l_6rjwp-tEdriMdbn9Zw/exec", {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+        } catch (err) {
+            alert("We couldn't reach our server. Please try again or contact us on WhatsApp directly.");
+            return;
+        }
 
         const message = `New Lead:%0A
 Name: ${data.name}%0A
@@ -51,7 +61,7 @@ Course: ${data.course}`;
 
 <div class="nav-container">
 
-<img src="images/logo.png" class="logo">
+<img src="images/logo.png" class="logo" alt="V JOIN Educational Consultancy logo">
 
 <div class="nav-links">
 <a href="index.html">Home</a>
@@ -74,7 +84,7 @@ Course: ${data.course}`;
 
 <form id="leadForm">
 <input type="text" name="name" placeholder="Full Name" required>
-<input type="text" name="phone" placeholder="Phone Number" required>
+<input type="tel" name="phone" placeholder="Phone Number" pattern="[0-9+\-\s]{7,15}" required>
 <input type="email" name="email" placeholder="Email" required>
 
 <select name="country">
