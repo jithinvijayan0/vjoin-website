@@ -261,6 +261,44 @@ line-height:1.5;
 margin:0;
 }
 
+/* UNIVERSITY CARDS */
+
+.uni-card{
+text-align:center;
+}
+
+.uni-logo-wrap{
+width:90px;
+height:90px;
+margin:0 auto 15px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.uni-logo{
+max-width:100%;
+max-height:100%;
+object-fit:contain;
+}
+
+.uni-logo-fallback{
+display:none;
+width:90px;
+height:90px;
+border-radius:50%;
+background:#0c2340;
+color:white;
+align-items:center;
+justify-content:center;
+font-weight:700;
+font-size:13px;
+letter-spacing:0.5px;
+text-align:center;
+padding:5px;
+box-sizing:border-box;
+}
+
 /* RESPONSIVE */
 
 @media (max-width: 768px){
