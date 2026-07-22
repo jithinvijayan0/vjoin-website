@@ -214,13 +214,19 @@ loadApprovedFeedback();
 
 <div class="wa-teaser" id="waTeaser">👋 Studying in Malaysia? Ask us anything</div>
 
-<a class="wa-bubble" id="waBubble"
-href="https://wa.me/917994685101?text=Hello%20I%20would%20like%20to%20study%20abroad"
-target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+<div class="wa-chat-panel" id="waChatPanel" role="dialog" aria-label="Chat with V JOIN Educational Consultancy" aria-hidden="true">
+<div class="wa-chat-header">
+<span>V JOIN Assistant</span>
+<button type="button" class="wa-chat-close" id="waChatClose" aria-label="Close chat">&times;</button>
+</div>
+<div class="wa-chat-body" id="waChatBody"></div>
+</div>
+
+<button type="button" class="wa-bubble" id="waBubble" aria-label="Chat with us on WhatsApp" aria-expanded="false" aria-controls="waChatPanel">
 <span class="wa-pulse-ring" aria-hidden="true"></span>
 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.663.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.437 5.174L2.062 22l4.943-1.372A9.958 9.958 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
 <span class="wa-badge" aria-hidden="true">1</span>
-</a>
+</button>
 
 </div>
 
@@ -241,11 +247,14 @@ justify-content:center;
 width:60px;
 height:60px;
 background:#25D366;
+border:none;
 border-radius:50%;
-text-decoration:none;
+cursor:pointer;
+appearance:none;
 box-shadow:0 5px 10px rgba(0,0,0,0.25);
 transition:transform 0.3s ease, background 0.3s ease;
 z-index:1;
+padding:0;
 }
 
 .wa-bubble:hover{
@@ -259,6 +268,7 @@ height:30px;
 fill:white;
 position:relative;
 z-index:2;
+pointer-events:none;
 }
 
 .wa-pulse-ring{
@@ -269,6 +279,11 @@ background:#25D366;
 z-index:0;
 animation:waPulse 2.5s ease-out infinite;
 pointer-events:none;
+}
+
+.wa-bubble.wa-engaged .wa-pulse-ring{
+animation:none;
+opacity:0;
 }
 
 @keyframes waPulse{
@@ -292,6 +307,11 @@ align-items:center;
 justify-content:center;
 border:2px solid white;
 z-index:3;
+pointer-events:none;
+}
+
+.wa-bubble.wa-engaged .wa-badge{
+display:none;
 }
 
 .wa-teaser{
@@ -330,10 +350,187 @@ transform:translateY(0);
 pointer-events:auto;
 }
 
+.wa-chat-panel{
+position:absolute;
+bottom:75px;
+right:0;
+width:320px;
+max-width:calc(100vw - 40px);
+max-height:440px;
+background:white;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,0.25);
+display:flex;
+flex-direction:column;
+overflow:hidden;
+opacity:0;
+transform:translateY(12px) scale(0.98);
+pointer-events:none;
+transition:opacity 0.25s ease, transform 0.25s ease;
+}
+
+.wa-chat-panel.wa-chat-open{
+opacity:1;
+transform:translateY(0) scale(1);
+pointer-events:auto;
+}
+
+.wa-chat-header{
+background:#0c2340;
+color:white;
+padding:14px 16px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+font-weight:600;
+font-size:15px;
+flex-shrink:0;
+}
+
+.wa-chat-close{
+background:none;
+border:none;
+color:white;
+font-size:22px;
+line-height:1;
+cursor:pointer;
+padding:0 4px;
+}
+
+.wa-chat-body{
+padding:16px;
+overflow-y:auto;
+flex:1;
+display:flex;
+flex-direction:column;
+gap:10px;
+background:#f4f6f9;
+}
+
+.wa-msg{
+display:flex;
+}
+
+.wa-msg-bot{
+justify-content:flex-start;
+}
+
+.wa-msg-user{
+justify-content:flex-end;
+}
+
+.wa-bubble-text{
+max-width:82%;
+padding:10px 14px;
+border-radius:14px;
+font-size:14px;
+line-height:1.4;
+}
+
+.wa-msg-bot .wa-bubble-text{
+background:white;
+color:#0c2340;
+border-bottom-left-radius:4px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
+}
+
+.wa-msg-user .wa-bubble-text{
+background:#25D366;
+color:white;
+border-bottom-right-radius:4px;
+}
+
+.wa-typing-dots{
+display:flex;
+gap:4px;
+padding:12px 14px;
+}
+
+.wa-typing-dots span{
+width:6px;
+height:6px;
+border-radius:50%;
+background:#9aa5b1;
+animation:waTypingBounce 1.2s infinite ease-in-out;
+}
+
+.wa-typing-dots span:nth-child(2){ animation-delay:0.15s; }
+.wa-typing-dots span:nth-child(3){ animation-delay:0.3s; }
+
+@keyframes waTypingBounce{
+0%, 60%, 100%{ transform:translateY(0); opacity:0.5; }
+30%{ transform:translateY(-4px); opacity:1; }
+}
+
+.wa-choices{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:2px;
+}
+
+.wa-choice-btn{
+background:white;
+border:1.5px solid #25D366;
+color:#0c2340;
+font-size:13px;
+font-weight:600;
+padding:8px 12px;
+border-radius:20px;
+cursor:pointer;
+transition:background 0.2s ease, color 0.2s ease;
+font-family:'Poppins', sans-serif;
+}
+
+.wa-choice-btn:hover:not(:disabled){
+background:#25D366;
+color:white;
+}
+
+.wa-choice-btn:disabled{
+opacity:0.5;
+cursor:default;
+}
+
+.wa-handoff{
+display:flex;
+justify-content:center;
+margin-top:6px;
+}
+
+.wa-handoff-btn{
+background:#25D366;
+color:white;
+text-decoration:none;
+font-weight:700;
+font-size:14px;
+padding:12px 20px;
+border-radius:24px;
+box-shadow:0 4px 12px rgba(37,211,102,0.35);
+transition:transform 0.2s ease, background 0.2s ease;
+}
+
+.wa-handoff-btn:hover{
+background:#1ebe5d;
+transform:translateY(-2px);
+}
+
+.wa-bubble:focus-visible,
+.wa-choice-btn:focus-visible,
+.wa-chat-close:focus-visible,
+.wa-handoff-btn:focus-visible{
+outline:3px solid #d4a24c;
+outline-offset:2px;
+}
+
 @media (prefers-reduced-motion: reduce){
 .wa-pulse-ring{
 animation:none;
 opacity:0;
+}
+.wa-typing-dots span{
+animation:none;
+opacity:1;
 }
 }
 
@@ -341,6 +538,11 @@ opacity:0;
 .wa-teaser{
 max-width:180px;
 font-size:13px;
+}
+.wa-chat-panel{
+width:calc(100vw - 32px);
+right:-4px;
+max-height:70vh;
 }
 }
 </style>
@@ -368,12 +570,206 @@ sessionStorage.setItem(OPENED_KEY, "1");
 }catch(e){}
 }
 
+var STEPS = [
+{
+key: "education",
+question: "Hi 👋 I'm the V JOIN assistant. To get started — what's your current education level?",
+options: ["High School / +2", "Bachelor's Degree", "Master's Degree", "Other"],
+ack: function(answer){
+var acks = {
+"High School / +2": "Got it — plenty of great foundation programs in Malaysia to bridge into a degree.",
+"Bachelor's Degree": "Nice, a Bachelor's degree opens up strong Master's options in Malaysia.",
+"Master's Degree": "A Master's already — we can look at specialized or PhD-track options too.",
+"Other": "Thanks, noted."
+};
+return acks[answer] || "Thanks, noted.";
+}
+},
+{
+key: "program",
+question: "Which field are you most interested in studying?",
+options: ["Business / Management", "Computer Science / IT", "Engineering", "Hospitality & Tourism", "Other"],
+ack: function(answer){
+var acks = {
+"Business / Management": "Malaysia's a strong hub for business programs with solid work-visa pathways after graduation.",
+"Computer Science / IT": "Good choice — Malaysian universities have really strong, affordable CS/IT programs right now.",
+"Engineering": "Malaysia has well-recognized engineering programs with international accreditation.",
+"Hospitality & Tourism": "Malaysia's hospitality programs are known for strong industry placements.",
+"Other": "Great, we'll find the right fit for that."
+};
+return acks[answer] || "Great, we'll find the right fit for that.";
+}
+},
+{
+key: "language",
+question: "Last one — which language would you prefer to chat in?",
+options: ["English", "Malayalam", "Hindi", "Arabic", "Other"],
+ack: function(answer){
+var openers = ["Perfect", "Great", "Got it", "Nice", "Understood"];
+var opener = openers[Math.floor(Math.random() * openers.length)];
+return opener + ", we'll make sure someone who speaks " + answer + " connects with you.";
+}
+}
+];
+
 document.addEventListener("DOMContentLoaded", function(){
 var bubble = document.getElementById("waBubble");
 var teaser = document.getElementById("waTeaser");
-if(!bubble || !teaser) return;
+var panel = document.getElementById("waChatPanel");
+var closeBtn = document.getElementById("waChatClose");
+var chatBody = document.getElementById("waChatBody");
+if(!bubble || !teaser || !panel || !chatBody) return;
 
 var teaserTimer = null;
+var chatStarted = false;
+var answers = {};
+
+function scrollToBottom(){
+chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function appendMessage(sender, text){
+var msg = document.createElement("div");
+msg.className = "wa-msg wa-msg-" + sender;
+var bubbleEl = document.createElement("div");
+bubbleEl.className = "wa-bubble-text";
+bubbleEl.textContent = text;
+msg.appendChild(bubbleEl);
+chatBody.appendChild(msg);
+scrollToBottom();
+return msg;
+}
+
+function showTyping(){
+var msg = document.createElement("div");
+msg.className = "wa-msg wa-msg-bot";
+var dots = document.createElement("div");
+dots.className = "wa-bubble-text wa-typing-dots";
+dots.appendChild(document.createElement("span"));
+dots.appendChild(document.createElement("span"));
+dots.appendChild(document.createElement("span"));
+msg.appendChild(dots);
+chatBody.appendChild(msg);
+scrollToBottom();
+return msg;
+}
+
+function botSay(text, callback){
+var typingEl = showTyping();
+var delay = 900 + Math.random() * 500;
+setTimeout(function(){
+typingEl.remove();
+appendMessage("bot", text);
+if(callback) callback();
+}, delay);
+}
+
+function showChoices(options, onSelect){
+var wrap = document.createElement("div");
+wrap.className = "wa-choices";
+options.forEach(function(opt){
+var btn = document.createElement("button");
+btn.type = "button";
+btn.className = "wa-choice-btn";
+btn.textContent = opt;
+btn.addEventListener("click", function(){
+wrap.querySelectorAll(".wa-choice-btn").forEach(function(b){ b.disabled = true; });
+onSelect(opt, wrap);
+});
+wrap.appendChild(btn);
+});
+chatBody.appendChild(wrap);
+scrollToBottom();
+return wrap;
+}
+
+function askStep(index){
+var step = STEPS[index];
+botSay(step.question, function(){
+showChoices(step.options, function(answer, wrapEl){
+appendMessage("user", answer);
+wrapEl.remove();
+answers[step.key] = answer;
+setTimeout(function(){
+botSay(step.ack(answer), function(){
+if(index + 1 < STEPS.length){
+setTimeout(function(){ askStep(index + 1); }, 500);
+}else{
+finishChat();
+}
+});
+}, 300);
+});
+});
+}
+
+function buildWhatsAppLink(){
+var lines = [
+"Hi! I'd like to know more about studying abroad.",
+"",
+"Education: " + answers.education,
+"Program: " + answers.program,
+"Preferred Language: " + answers.language
+];
+return "https://wa.me/917994685101?text=" + encodeURIComponent(lines.join("\n"));
+}
+
+function finishChat(){
+botSay("Thanks for sharing all that! Tap below and we'll continue on WhatsApp with everything you've told us.", function(){
+var handoff = document.createElement("div");
+handoff.className = "wa-handoff";
+var link = document.createElement("a");
+link.className = "wa-handoff-btn";
+link.target = "_blank";
+link.rel = "noopener";
+link.href = buildWhatsAppLink();
+link.textContent = "Continue on WhatsApp";
+handoff.appendChild(link);
+chatBody.appendChild(handoff);
+scrollToBottom();
+});
+}
+
+function startChatIfNeeded(){
+if(chatStarted) return;
+chatStarted = true;
+askStep(0);
+}
+
+function openPanel(){
+panel.classList.add("wa-chat-open");
+panel.setAttribute("aria-hidden", "false");
+bubble.setAttribute("aria-expanded", "true");
+bubble.classList.add("wa-engaged");
+markOpened();
+clearTimeout(teaserTimer);
+teaser.classList.remove("wa-teaser-visible");
+startChatIfNeeded();
+closeBtn.focus();
+}
+
+function closePanel(){
+panel.classList.remove("wa-chat-open");
+panel.setAttribute("aria-hidden", "true");
+bubble.setAttribute("aria-expanded", "false");
+bubble.focus();
+}
+
+bubble.addEventListener("click", function(){
+if(panel.classList.contains("wa-chat-open")){
+closePanel();
+}else{
+openPanel();
+}
+});
+
+closeBtn.addEventListener("click", closePanel);
+
+document.addEventListener("keydown", function(e){
+if(e.key === "Escape" && panel.classList.contains("wa-chat-open")){
+closePanel();
+}
+});
 
 function showTeaser(){
 if(hasOpened()) return;
@@ -387,12 +783,6 @@ if(!hasOpened()){
 teaserTimer = setTimeout(showTeaser, TEASER_REPEAT);
 }
 }
-
-bubble.addEventListener("click", function(){
-markOpened();
-clearTimeout(teaserTimer);
-teaser.classList.remove("wa-teaser-visible");
-});
 
 if(!hasOpened()){
 teaserTimer = setTimeout(showTeaser, TEASER_DELAY);
