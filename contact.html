@@ -113,614 +113,435 @@
 </footer>
 
 <!-- WhatsApp Lead Qualifier Widget -->
-<div class="wa-widget" id="waWidget">
-
-<div class="wa-teaser" id="waTeaser">
-<span class="wa-teaser-title">Chat with Phoenix 👋</span>
-<span class="wa-teaser-sub">Studying in Malaysia? Ask me anything</span>
-</div>
-
-<div class="wa-chat-panel" id="waChatPanel" role="dialog" aria-label="Chat with Phoenix from V JOIN" aria-hidden="true">
-<div class="wa-chat-header">
-<span>Phoenix from V JOIN</span>
-<button type="button" class="wa-chat-close" id="waChatClose" aria-label="Close chat">&times;</button>
-</div>
-<div class="wa-chat-body" id="waChatBody"></div>
-</div>
-
-<button type="button" class="wa-bubble" id="waBubble" aria-label="Chat with us on WhatsApp" aria-expanded="false" aria-controls="waChatPanel">
-<span class="wa-pulse-ring" aria-hidden="true"></span>
-<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.663.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zM12 2C6.477 2 2 6.477 2 12c0 1.892.525 3.663 1.437 5.174L2.062 22l4.943-1.372A9.958 9.958 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
-<span class="wa-badge" aria-hidden="true">1</span>
-</button>
-
-</div>
+<!-- ============================================================
+     V-JOIN Floating WhatsApp Lead-Qualifier Widget
+     ============================================================
+     HOW IT WORKS:
+     - Bubble opens a chat-style panel (looks and feels like a
+       real chat assistant, but it's simple pre-scripted logic —
+       no backend, no AI API, nothing that can go wrong or cost
+       money to run).
+     - It asks 3 questions one at a time, like a real conversation:
+         1. Latest education level
+         2. Program they're interested in
+         3. Preferred communication language
+     - After all 3 are answered, it shows one final button that
+       opens REAL WhatsApp with your number, with all 3 answers
+       already typed into the message — so you open the chat
+       already knowing who they are and what they need.
+     ============================================================ -->
 
 <style>
-.wa-widget{
-position:fixed;
-bottom:20px;
-right:20px;
-z-index:999;
-font-family:'Poppins', sans-serif;
-}
+  #vj-wa-bubble {
+    position: fixed; bottom: 22px; right: 22px;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: #25D366; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25); cursor: pointer; z-index: 9999;
+    transition: transform 0.2s ease;
+  }
+  #vj-wa-bubble:hover { transform: scale(1.07); }
+  #vj-wa-bubble svg { width: 32px; height: 32px; position: relative; z-index: 2; pointer-events: none; }
+  #vj-wa-badge {
+    position: absolute; top: -4px; right: -4px; background: #d4af37; color: #1a1a1a;
+    font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 10px;
+    font-family: Arial, sans-serif; z-index: 3; pointer-events: none;
+  }
 
-.wa-bubble{
-position:relative;
-display:flex;
-align-items:center;
-justify-content:center;
-width:60px;
-height:60px;
-background:#25D366;
-border:none;
-border-radius:50%;
-cursor:pointer;
-appearance:none;
-box-shadow:0 5px 10px rgba(0,0,0,0.25);
-transition:transform 0.3s ease, background 0.3s ease;
-z-index:1;
-padding:0;
-}
+  /* ---- Icon pulse ring: independent of the teaser, runs continuously ---- */
+  .vj-pulse-ring {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: #25D366; z-index: 0; pointer-events: none;
+    animation: vjPulse 2.5s ease-out infinite;
+  }
+  @keyframes vjPulse {
+    0% { transform: scale(1); opacity: 0.55; }
+    70%, 100% { transform: scale(1.7); opacity: 0; }
+  }
 
-.wa-bubble:hover{
-background:#1ebe5d;
-transform:scale(1.08);
-}
+  /* ---- Teaser label: appears on load, auto-hides, reappears on a cycle ---- */
+  #vj-wa-teaser {
+    position: fixed;
+    bottom: 34px;
+    right: 92px;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 200px;
+    line-height: 1.35;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    z-index: 9998;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateX(10px);
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  #vj-wa-teaser.vj-teaser-visible {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+  #vj-wa-teaser.vj-teaser-hidden {
+    display: none;
+  }
+  #vj-wa-teaser .vj-teaser-title { font-weight: bold; font-size: 13px; color: #d4af37; }
+  #vj-wa-teaser .vj-teaser-sub { font-size: 12px; color: #eee; margin-top: 2px; }
+  #vj-wa-teaser::after {
+    content: "";
+    position: absolute;
+    right: -6px;
+    bottom: 16px;
+    width: 0; height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 6px solid #1a1a1a;
+  }
+  #vj-wa-teaser-close {
+    position: absolute; top: -6px; right: -6px;
+    background: #fff; color: #333; width: 18px; height: 18px; border-radius: 50%;
+    font-size: 12px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3); cursor: pointer;
+  }
 
-.wa-bubble svg{
-width:30px;
-height:30px;
-fill:white;
-position:relative;
-z-index:2;
-pointer-events:none;
-}
+  @media (prefers-reduced-motion: reduce) {
+    .vj-pulse-ring { animation: none; opacity: 0; }
+    #vj-wa-teaser { transition: opacity 0.2s ease; }
+    #vj-wa-teaser.vj-teaser-visible { transform: translateX(0) !important; }
+  }
 
-.wa-pulse-ring{
-position:absolute;
-inset:0;
-border-radius:50%;
-background:#25D366;
-z-index:0;
-animation:waPulse 2.5s ease-out infinite;
-pointer-events:none;
-}
+  #vj-wa-panel {
+    position: fixed; bottom: 96px; right: 22px; width: 320px; max-width: calc(100vw - 40px);
+    background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    font-family: Arial, Helvetica, sans-serif; display: none; flex-direction: column;
+    overflow: hidden; z-index: 9999;
+  }
+  #vj-wa-panel.open { display: flex; }
 
-.wa-bubble.wa-engaged .wa-pulse-ring{
-animation:none;
-opacity:0;
-}
+  #vj-wa-header {
+    background: linear-gradient(135deg, #1a1a1a, #2b2b2b); color: #d4af37;
+    padding: 14px 16px; display: flex; align-items: center; gap: 10px;
+  }
+  #vj-wa-header img { width: 34px; height: 34px; border-radius: 50%; background: #fff; object-fit: contain; padding: 2px; }
+  #vj-wa-header .vj-title { font-weight: bold; font-size: 14px; color: #fff; }
+  #vj-wa-header .vj-sub { font-size: 11px; color: #d4af37; }
+  #vj-wa-close { margin-left: auto; cursor: pointer; color: #ccc; font-size: 18px; line-height: 1; }
 
-@keyframes waPulse{
-0%{ transform:scale(1); opacity:0.55; }
-70%, 100%{ transform:scale(1.7); opacity:0; }
-}
+  #vj-wa-body {
+    padding: 14px 16px; background: #ece5dd; max-height: 380px; overflow-y: auto;
+  }
+  .vj-msg-bot {
+    background: #fff; padding: 10px 12px; border-radius: 10px 10px 10px 2px; font-size: 13.5px;
+    color: #1a1a1a; margin-bottom: 10px; max-width: 88%; box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+  .vj-msg-user {
+    background: #d9fdd3; padding: 10px 12px; border-radius: 10px 10px 2px 10px; font-size: 13.5px;
+    color: #1a1a1a; margin-bottom: 10px; max-width: 88%; margin-left: auto;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+  .vj-typing {
+    display: inline-flex; gap: 4px; background: #fff; padding: 10px 14px; border-radius: 10px 10px 10px 2px;
+    margin-bottom: 10px; width: fit-content;
+  }
+  .vj-typing span {
+    width: 6px; height: 6px; border-radius: 50%; background: #999; animation: vjBlink 1.2s infinite;
+  }
+  .vj-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .vj-typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes vjBlink { 0%, 80%, 100% { opacity: 0.3; } 40% { opacity: 1; } }
 
-.wa-badge{
-position:absolute;
-top:-4px;
-right:-4px;
-width:18px;
-height:18px;
-background:#ff3b30;
-color:white;
-font-size:11px;
-font-weight:700;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-border:2px solid white;
-z-index:3;
-pointer-events:none;
-}
+  .vj-quick-replies { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+  .vj-quick-btn {
+    background: #fff; border: 1.5px solid #25D366; color: #1a1a1a; padding: 8px 10px;
+    border-radius: 8px; font-size: 13px; text-align: left; cursor: pointer;
+  }
+  .vj-quick-btn:hover { background: #eafaf1; }
 
-.wa-bubble.wa-engaged .wa-badge{
-display:none;
-}
+  .vj-text-row { display: flex; gap: 6px; margin-bottom: 10px; }
+  .vj-text-row input {
+    flex: 1; padding: 8px 10px; border-radius: 8px; border: 1.5px solid #ccc; font-size: 13px;
+  }
+  .vj-text-row button {
+    background: #25D366; color: #fff; border: none; padding: 0 14px; border-radius: 8px; cursor: pointer; font-weight: bold;
+  }
 
-.wa-teaser{
-position:absolute;
-bottom:75px;
-right:0;
-max-width:230px;
-background:white;
-color:#0c2340;
-padding:12px 16px;
-border-radius:12px;
-line-height:1.4;
-box-shadow:0 6px 20px rgba(0,0,0,0.22);
-opacity:0;
-transform-origin:bottom right;
-transform:scale(0.2) translate(25%, 35%);
-pointer-events:none;
-transition:opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.wa-teaser::after{
-content:"";
-position:absolute;
-bottom:-6px;
-right:20px;
-width:12px;
-height:12px;
-background:white;
-transform:rotate(45deg);
-}
-
-.wa-teaser.wa-teaser-visible{
-opacity:1;
-transform:scale(1) translate(0, 0);
-pointer-events:auto;
-}
-
-.wa-teaser-title{
-display:block;
-font-weight:700;
-font-size:14.5px;
-color:#0c2340;
-}
-
-.wa-teaser-sub{
-display:block;
-font-weight:400;
-font-size:12.5px;
-color:#5b6b7c;
-margin-top:3px;
-}
-
-.wa-chat-panel{
-position:absolute;
-bottom:75px;
-right:0;
-width:320px;
-max-width:calc(100vw - 40px);
-max-height:440px;
-background:white;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,0.25);
-display:flex;
-flex-direction:column;
-overflow:hidden;
-opacity:0;
-transform:translateY(12px) scale(0.98);
-pointer-events:none;
-transition:opacity 0.25s ease, transform 0.25s ease;
-}
-
-.wa-chat-panel.wa-chat-open{
-opacity:1;
-transform:translateY(0) scale(1);
-pointer-events:auto;
-}
-
-.wa-chat-header{
-background:#0c2340;
-color:white;
-padding:14px 16px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-font-weight:600;
-font-size:15px;
-flex-shrink:0;
-}
-
-.wa-chat-close{
-background:none;
-border:none;
-color:white;
-font-size:22px;
-line-height:1;
-cursor:pointer;
-padding:0 4px;
-}
-
-.wa-chat-body{
-padding:16px;
-overflow-y:auto;
-flex:1;
-display:flex;
-flex-direction:column;
-gap:10px;
-background:#f4f6f9;
-}
-
-.wa-msg{
-display:flex;
-}
-
-.wa-msg-bot{
-justify-content:flex-start;
-}
-
-.wa-msg-user{
-justify-content:flex-end;
-}
-
-.wa-bubble-text{
-max-width:82%;
-padding:10px 14px;
-border-radius:14px;
-font-size:14px;
-line-height:1.4;
-}
-
-.wa-msg-bot .wa-bubble-text{
-background:white;
-color:#0c2340;
-border-bottom-left-radius:4px;
-box-shadow:0 2px 6px rgba(0,0,0,0.08);
-}
-
-.wa-msg-user .wa-bubble-text{
-background:#25D366;
-color:white;
-border-bottom-right-radius:4px;
-}
-
-.wa-typing-dots{
-display:flex;
-gap:4px;
-padding:12px 14px;
-}
-
-.wa-typing-dots span{
-width:6px;
-height:6px;
-border-radius:50%;
-background:#9aa5b1;
-animation:waTypingBounce 1.2s infinite ease-in-out;
-}
-
-.wa-typing-dots span:nth-child(2){ animation-delay:0.15s; }
-.wa-typing-dots span:nth-child(3){ animation-delay:0.3s; }
-
-@keyframes waTypingBounce{
-0%, 60%, 100%{ transform:translateY(0); opacity:0.5; }
-30%{ transform:translateY(-4px); opacity:1; }
-}
-
-.wa-choices{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-margin-top:2px;
-}
-
-.wa-choice-btn{
-background:white;
-border:1.5px solid #25D366;
-color:#0c2340;
-font-size:13px;
-font-weight:600;
-padding:8px 12px;
-border-radius:20px;
-cursor:pointer;
-transition:background 0.2s ease, color 0.2s ease;
-font-family:'Poppins', sans-serif;
-}
-
-.wa-choice-btn:hover:not(:disabled){
-background:#25D366;
-color:white;
-}
-
-.wa-choice-btn:disabled{
-opacity:0.5;
-cursor:default;
-}
-
-.wa-handoff{
-display:flex;
-justify-content:center;
-margin-top:6px;
-}
-
-.wa-handoff-btn{
-background:#25D366;
-color:white;
-text-decoration:none;
-font-weight:700;
-font-size:14px;
-padding:12px 20px;
-border-radius:24px;
-box-shadow:0 4px 12px rgba(37,211,102,0.35);
-transition:transform 0.2s ease, background 0.2s ease;
-}
-
-.wa-handoff-btn:hover{
-background:#1ebe5d;
-transform:translateY(-2px);
-}
-
-.wa-bubble:focus-visible,
-.wa-choice-btn:focus-visible,
-.wa-chat-close:focus-visible,
-.wa-handoff-btn:focus-visible{
-outline:3px solid #d4a24c;
-outline-offset:2px;
-}
-
-@media (prefers-reduced-motion: reduce){
-.wa-pulse-ring{
-animation:none;
-opacity:0;
-}
-.wa-typing-dots span{
-animation:none;
-opacity:1;
-}
-.wa-teaser{
-transition:opacity 0.3s ease;
-transform:none;
-}
-.wa-teaser.wa-teaser-visible{
-transform:none;
-}
-}
-
-@media (max-width:420px){
-.wa-teaser{
-max-width:190px;
-}
-.wa-teaser-title{
-font-size:13.5px;
-}
-.wa-teaser-sub{
-font-size:12px;
-}
-.wa-chat-panel{
-width:calc(100vw - 32px);
-right:-4px;
-max-height:70vh;
-}
-}
+  #vj-wa-footer { padding: 12px 16px; background: #f7f7f7; border-top: 1px solid #eee; }
+  #vj-wa-cta {
+    display: block; width: 100%; background: #25D366; color: #fff; text-align: center; padding: 11px;
+    border-radius: 8px; font-weight: bold; font-size: 14px; text-decoration: none; box-sizing: border-box;
+  }
+  #vj-wa-cta:hover { background: #1ebe57; }
 </style>
 
+<div id="vj-wa-teaser" onclick="vjToggleWA()">
+  <div id="vj-wa-teaser-close" onclick="vjHideTeaser(event)">&times;</div>
+  <div class="vj-teaser-title">Chat with Phoenix 👋</div>
+  <div class="vj-teaser-sub">Studying in Malaysia? Ask me anything</div>
+</div>
+
+<div id="vj-wa-bubble" onclick="vjToggleWA()">
+  <span class="vj-pulse-ring" aria-hidden="true"></span>
+  <span id="vj-wa-badge">1</span>
+  <svg viewBox="0 0 32 32" fill="white"><path d="M16.001 3C9.373 3 4 8.373 4 15c0 2.386.7 4.61 1.902 6.475L4 29l7.727-1.867A11.94 11.94 0 0 0 16.001 27C22.628 27 28 21.627 28 15S22.628 3 16.001 3zm0 21.75c-1.973 0-3.86-.53-5.49-1.53l-.393-.234-4.585 1.107 1.14-4.47-.256-.406A9.71 9.71 0 0 1 5.25 15c0-5.928 4.823-10.75 10.751-10.75S26.75 9.072 26.75 15 21.929 24.75 16.001 24.75zm5.94-8.06c-.325-.163-1.924-.95-2.222-1.058-.298-.108-.515-.163-.732.163-.216.325-.84 1.058-1.03 1.276-.19.217-.38.244-.705.081-.325-.163-1.372-.505-2.614-1.612-.966-.86-1.618-1.922-1.808-2.247-.19-.325-.02-.5.143-.663.147-.146.325-.38.487-.57.163-.19.217-.325.325-.542.108-.217.054-.407-.027-.57-.081-.163-.732-1.765-1.004-2.417-.264-.634-.532-.548-.732-.558l-.624-.011c-.217 0-.57.081-.868.407-.298.325-1.138 1.112-1.138 2.713 0 1.6 1.165 3.146 1.327 3.363.163.217 2.29 3.497 5.55 4.905.776.335 1.381.535 1.853.685.778.247 1.486.212 2.046.129.624-.093 1.924-.786 2.196-1.545.271-.76.271-1.41.19-1.545-.081-.135-.298-.217-.623-.38z"/></svg>
+</div>
+
+<div id="vj-wa-panel">
+  <div id="vj-wa-header">
+    <img src="images/logo.png" alt="V-JOIN">
+    <div>
+      <div class="vj-title">Phoenix from V-JOIN</div>
+      <div class="vj-sub">Usually replies within minutes</div>
+    </div>
+    <div id="vj-wa-close" onclick="vjToggleWA()">&times;</div>
+  </div>
+
+  <div id="vj-wa-body"></div>
+
+  <div id="vj-wa-footer">
+    <a id="vj-wa-cta" href="#" target="_blank" style="display:none;">Continue on WhatsApp</a>
+  </div>
+</div>
+
 <script>
-(function(){
-"use strict";
+  // ---- EDIT THIS ----
+  const VJ_WHATSAPP_NUMBER = "917994685101";
+  // --------------------
 
-var OPENED_KEY = "vjoinWaWidgetOpened";
-var TEASER_DELAY = 4000;
-var TEASER_VISIBLE = 6000;
-var TEASER_REPEAT = 25000;
+  const VJ_OPENED_KEY = "vjPhoenixWidgetOpened";
+  const VJ_TEASER_DELAY = 1000;    // first appearance, ~1s after load
+  const VJ_TEASER_VISIBLE = 7000;  // stays visible ~7s
+  const VJ_TEASER_REPEAT = 25000;  // then waits ~25s before showing again
 
-function hasOpened(){
-try{
-return sessionStorage.getItem(OPENED_KEY) === "1";
-}catch(e){
-return false;
-}
-}
+  function vjHasOpened() {
+    try { return sessionStorage.getItem(VJ_OPENED_KEY) === "1"; } catch (e) { return false; }
+  }
 
-function markOpened(){
-try{
-sessionStorage.setItem(OPENED_KEY, "1");
-}catch(e){}
-}
+  function vjMarkOpened() {
+    try { sessionStorage.setItem(VJ_OPENED_KEY, "1"); } catch (e) {}
+  }
 
-var STEPS = [
-{
-key: "education",
-question: "👋 Hi, I'm Phoenix from V JOIN! To get started — what's your current education level?",
-options: ["High School / +2", "Bachelor's Degree", "Master's Degree", "Other"],
-ack: function(answer){
-var acks = {
-"High School / +2": "Got it — plenty of great foundation programs in Malaysia to bridge into a degree.",
-"Bachelor's Degree": "Nice, a Bachelor's degree opens up strong Master's options in Malaysia.",
-"Master's Degree": "A Master's already — we can look at specialized or PhD-track options too.",
-"Other": "Thanks, noted."
-};
-return acks[answer] || "Thanks, noted.";
-}
-},
-{
-key: "program",
-question: "Which field are you most interested in studying?",
-options: ["Business / Management", "Computer Science / IT", "Engineering", "Hospitality & Tourism", "Other"],
-ack: function(answer){
-var acks = {
-"Business / Management": "Malaysia's a strong hub for business programs with solid work-visa pathways after graduation.",
-"Computer Science / IT": "Good choice — Malaysian universities have really strong, affordable CS/IT programs right now.",
-"Engineering": "Malaysia has well-recognized engineering programs with international accreditation.",
-"Hospitality & Tourism": "Malaysia's hospitality programs are known for strong industry placements.",
-"Other": "Great, we'll find the right fit for that."
-};
-return acks[answer] || "Great, we'll find the right fit for that.";
-}
-},
-{
-key: "language",
-question: "Last one — which language would you prefer to chat in?",
-options: ["English", "Malayalam", "Hindi", "Arabic", "Other"],
-ack: function(answer){
-var openers = ["Perfect", "Great", "Got it", "Nice", "Understood"];
-var opener = openers[Math.floor(Math.random() * openers.length)];
-return opener + ", we'll make sure someone who speaks " + answer + " connects with you.";
-}
-}
-];
+  const vjAnswers = { education: "", program: "", language: "" };
+  let vjStarted = false;
+  const vjBody = document.getElementById('vj-wa-body');
 
-document.addEventListener("DOMContentLoaded", function(){
-var bubble = document.getElementById("waBubble");
-var teaser = document.getElementById("waTeaser");
-var panel = document.getElementById("waChatPanel");
-var closeBtn = document.getElementById("waChatClose");
-var chatBody = document.getElementById("waChatBody");
-if(!bubble || !teaser || !panel || !chatBody) return;
+  let vjTeaserCycleTimer = null;
 
-var teaserTimer = null;
-var chatStarted = false;
-var answers = {};
+  function vjShowTeaserEl() {
+    if (vjHasOpened()) return;
+    const teaser = document.getElementById('vj-wa-teaser');
+    if (!teaser) return;
+    teaser.classList.remove('vj-teaser-hidden');
+    teaser.classList.add('vj-teaser-visible');
+    vjTeaserCycleTimer = setTimeout(vjAutoHideTeaser, VJ_TEASER_VISIBLE);
+  }
 
-function scrollToBottom(){
-chatBody.scrollTop = chatBody.scrollHeight;
-}
+  function vjAutoHideTeaser() {
+    const teaser = document.getElementById('vj-wa-teaser');
+    if (teaser) teaser.classList.remove('vj-teaser-visible');
+    if (!vjHasOpened()) {
+      vjTeaserCycleTimer = setTimeout(vjShowTeaserEl, VJ_TEASER_REPEAT);
+    }
+  }
 
-function appendMessage(sender, text){
-var msg = document.createElement("div");
-msg.className = "wa-msg wa-msg-" + sender;
-var bubbleEl = document.createElement("div");
-bubbleEl.className = "wa-bubble-text";
-bubbleEl.textContent = text;
-msg.appendChild(bubbleEl);
-chatBody.appendChild(msg);
-scrollToBottom();
-return msg;
-}
+  function vjHideTeaser(event) {
+    event.stopPropagation(); // don't trigger the chat open when tapping the X
+    vjMarkOpened();
+    clearTimeout(vjTeaserCycleTimer);
+    const teaser = document.getElementById('vj-wa-teaser');
+    if (teaser) {
+      teaser.classList.remove('vj-teaser-visible');
+      teaser.classList.add('vj-teaser-hidden');
+    }
+  }
 
-function showTyping(){
-var msg = document.createElement("div");
-msg.className = "wa-msg wa-msg-bot";
-var dots = document.createElement("div");
-dots.className = "wa-bubble-text wa-typing-dots";
-dots.appendChild(document.createElement("span"));
-dots.appendChild(document.createElement("span"));
-dots.appendChild(document.createElement("span"));
-msg.appendChild(dots);
-chatBody.appendChild(msg);
-scrollToBottom();
-return msg;
-}
+  function vjToggleWA() {
+    const panel = document.getElementById('vj-wa-panel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+      vjMarkOpened();
+      clearTimeout(vjTeaserCycleTimer);
+      const teaser = document.getElementById('vj-wa-teaser');
+      if (teaser) {
+        teaser.classList.remove('vj-teaser-visible');
+        teaser.classList.add('vj-teaser-hidden');
+      }
+      if (!vjStarted) {
+        vjStarted = true;
+        vjStartFlow();
+      }
+    }
+  }
 
-function botSay(text, callback){
-var typingEl = showTyping();
-var delay = 900 + Math.random() * 500;
-setTimeout(function(){
-typingEl.remove();
-appendMessage("bot", text);
-if(callback) callback();
-}, delay);
-}
+  // Bootstrap the teaser cycle - only if the visitor hasn't already
+  // opened the chat or dismissed the teaser earlier in this visit
+  // (persists across every page on the site via sessionStorage).
+  (function () {
+    const teaser = document.getElementById('vj-wa-teaser');
+    if (vjHasOpened()) {
+      if (teaser) teaser.classList.add('vj-teaser-hidden');
+    } else {
+      vjTeaserCycleTimer = setTimeout(vjShowTeaserEl, VJ_TEASER_DELAY);
+    }
+  })();
 
-function showChoices(options, onSelect){
-var wrap = document.createElement("div");
-wrap.className = "wa-choices";
-options.forEach(function(opt){
-var btn = document.createElement("button");
-btn.type = "button";
-btn.className = "wa-choice-btn";
-btn.textContent = opt;
-btn.addEventListener("click", function(){
-wrap.querySelectorAll(".wa-choice-btn").forEach(function(b){ b.disabled = true; });
-onSelect(opt, wrap);
-});
-wrap.appendChild(btn);
-});
-chatBody.appendChild(wrap);
-scrollToBottom();
-return wrap;
-}
+  function vjBotBubble(html) {
+    const div = document.createElement('div');
+    div.className = 'vj-msg-bot';
+    div.innerHTML = html;
+    vjBody.appendChild(div);
+    vjBody.scrollTop = vjBody.scrollHeight;
+  }
 
-function askStep(index){
-var step = STEPS[index];
-botSay(step.question, function(){
-showChoices(step.options, function(answer, wrapEl){
-appendMessage("user", answer);
-wrapEl.remove();
-answers[step.key] = answer;
-setTimeout(function(){
-botSay(step.ack(answer), function(){
-if(index + 1 < STEPS.length){
-setTimeout(function(){ askStep(index + 1); }, 500);
-}else{
-finishChat();
-}
-});
-}, 300);
-});
-});
-}
+  function vjUserBubble(text) {
+    const div = document.createElement('div');
+    div.className = 'vj-msg-user';
+    div.textContent = text;
+    vjBody.appendChild(div);
+    vjBody.scrollTop = vjBody.scrollHeight;
+  }
 
-function buildWhatsAppLink(){
-var lines = [
-"Hi! I'd like to know more about studying abroad.",
-"",
-"Education: " + answers.education,
-"Program: " + answers.program,
-"Preferred Language: " + answers.language
-];
-return "https://wa.me/917994685101?text=" + encodeURIComponent(lines.join("\n"));
-}
+  function vjShowTyping(callback, delay = 700) {
+    const typing = document.createElement('div');
+    typing.className = 'vj-typing';
+    typing.id = 'vj-typing-indicator';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    vjBody.appendChild(typing);
+    vjBody.scrollTop = vjBody.scrollHeight;
+    setTimeout(() => {
+      const el = document.getElementById('vj-typing-indicator');
+      if (el) el.remove();
+      callback();
+    }, delay);
+  }
 
-function finishChat(){
-botSay("Thanks for sharing all that! Tap below and we'll continue on WhatsApp with everything you've told us.", function(){
-var handoff = document.createElement("div");
-handoff.className = "wa-handoff";
-var link = document.createElement("a");
-link.className = "wa-handoff-btn";
-link.target = "_blank";
-link.rel = "noopener";
-link.href = buildWhatsAppLink();
-link.textContent = "Continue on WhatsApp";
-handoff.appendChild(link);
-chatBody.appendChild(handoff);
-scrollToBottom();
-});
-}
+  function vjClearInteractive() {
+    document.querySelectorAll('.vj-quick-replies, .vj-text-row').forEach(el => el.remove());
+  }
 
-function startChatIfNeeded(){
-if(chatStarted) return;
-chatStarted = true;
-askStep(0);
-}
+  function vjRenderQuickReplies(options, onPick) {
+    const wrap = document.createElement('div');
+    wrap.className = 'vj-quick-replies';
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'vj-quick-btn';
+      btn.textContent = opt;
+      btn.onclick = () => onPick(opt);
+      wrap.appendChild(btn);
+    });
+    vjBody.appendChild(wrap);
+    vjBody.scrollTop = vjBody.scrollHeight;
+  }
 
-function openPanel(){
-panel.classList.add("wa-chat-open");
-panel.setAttribute("aria-hidden", "false");
-bubble.setAttribute("aria-expanded", "true");
-bubble.classList.add("wa-engaged");
-markOpened();
-clearTimeout(teaserTimer);
-teaser.classList.remove("wa-teaser-visible");
-startChatIfNeeded();
-closeBtn.focus();
-}
+  function vjRenderTextInput(placeholder, onSubmit) {
+    const wrap = document.createElement('div');
+    wrap.className = 'vj-text-row';
+    const input = document.createElement('input');
+    input.placeholder = placeholder;
+    const btn = document.createElement('button');
+    btn.textContent = 'Go';
+    const submit = () => {
+      if (input.value.trim() === '') return;
+      onSubmit(input.value.trim());
+    };
+    btn.onclick = submit;
+    input.addEventListener('keypress', e => { if (e.key === 'Enter') submit(); });
+    wrap.appendChild(input);
+    wrap.appendChild(btn);
+    vjBody.appendChild(wrap);
+    vjBody.scrollTop = vjBody.scrollHeight;
+    input.focus();
+  }
 
-function closePanel(){
-panel.classList.remove("wa-chat-open");
-panel.setAttribute("aria-hidden", "true");
-bubble.setAttribute("aria-expanded", "false");
-bubble.focus();
-}
+  function vjStartFlow() {
+    vjShowTyping(() => {
+      vjBotBubble("👋 Hi! I'm here to connect you with V-JOIN. Just 3 quick questions, then I'll take you straight to WhatsApp.");
+      vjShowTyping(() => vjAskEducation(), 600);
+    }, 500);
+  }
 
-bubble.addEventListener("click", function(){
-if(panel.classList.contains("wa-chat-open")){
-closePanel();
-}else{
-openPanel();
-}
-});
+  function vjAskEducation() {
+    vjBotBubble("1️⃣ What's your latest education qualification?");
+    vjRenderQuickReplies(
+      ["High School / +2", "Bachelor's Degree", "Master's Degree", "Other"],
+      (choice) => {
+        vjClearInteractive();
+        if (choice === "Other") {
+          vjRenderTextInput("Type your qualification...", (text) => {
+            vjAnswers.education = text;
+            vjUserBubble(text);
+            document.querySelector('.vj-text-row')?.remove();
+            vjShowTyping(() => vjAskProgram(), 600);
+          });
+        } else {
+          vjAnswers.education = choice;
+          vjUserBubble(choice);
+          vjShowTyping(() => vjAskProgram(), 600);
+        }
+      }
+    );
+  }
 
-closeBtn.addEventListener("click", closePanel);
+  function vjAskProgram() {
+    vjBotBubble("2️⃣ Which program are you interested in?");
+    vjRenderQuickReplies(
+      ["Business / Management", "Computer Science / IT", "Engineering", "Hospitality & Tourism", "Other"],
+      (choice) => {
+        vjClearInteractive();
+        if (choice === "Other") {
+          vjRenderTextInput("Type the program...", (text) => {
+            vjAnswers.program = text;
+            vjUserBubble(text);
+            document.querySelector('.vj-text-row')?.remove();
+            vjShowTyping(() => vjAskLanguage(), 600);
+          });
+        } else {
+          vjAnswers.program = choice;
+          vjUserBubble(choice);
+          vjShowTyping(() => vjAskLanguage(), 600);
+        }
+      }
+    );
+  }
 
-document.addEventListener("keydown", function(e){
-if(e.key === "Escape" && panel.classList.contains("wa-chat-open")){
-closePanel();
-}
-});
+  function vjAskLanguage() {
+    vjBotBubble("3️⃣ Preferred language to communicate in?");
+    vjRenderQuickReplies(
+      ["English", "Malayalam", "Hindi", "Other"],
+      (choice) => {
+        vjClearInteractive();
+        if (choice === "Other") {
+          vjRenderTextInput("Type your preferred language...", (text) => {
+            vjAnswers.language = text;
+            vjUserBubble(text);
+            document.querySelector('.vj-text-row')?.remove();
+            vjShowTyping(() => vjFinish(), 600);
+          });
+        } else {
+          vjAnswers.language = choice;
+          vjUserBubble(choice);
+          vjShowTyping(() => vjFinish(), 600);
+        }
+      }
+    );
+  }
 
-function showTeaser(){
-if(hasOpened()) return;
-teaser.classList.add("wa-teaser-visible");
-teaserTimer = setTimeout(hideTeaser, TEASER_VISIBLE);
-}
+  function vjFinish() {
+    vjBotBubble("✅ Thanks! Tap below to continue on WhatsApp — our team will pick up right where we left off.");
 
-function hideTeaser(){
-teaser.classList.remove("wa-teaser-visible");
-if(!hasOpened()){
-teaserTimer = setTimeout(showTeaser, TEASER_REPEAT);
-}
-}
+    const message =
+      "Hi V-JOIN! I'm interested in studying in Malaysia.\n" +
+      "🎓 Latest education: " + vjAnswers.education + "\n" +
+      "📚 Program interested in: " + vjAnswers.program + "\n" +
+      "💬 Preferred language: " + vjAnswers.language;
 
-if(!hasOpened()){
-teaserTimer = setTimeout(showTeaser, TEASER_DELAY);
-}
-});
-})();
+    const encoded = encodeURIComponent(message);
+    const link = "https://wa.me/" + VJ_WHATSAPP_NUMBER + "?text=" + encoded;
+
+    const cta = document.getElementById('vj-wa-cta');
+    cta.href = link;
+    cta.style.display = 'block';
+  }
 </script>
 <!-- End WhatsApp Lead Qualifier Widget -->
 
