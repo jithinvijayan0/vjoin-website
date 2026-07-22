@@ -175,11 +175,14 @@
 <!-- WhatsApp Lead Qualifier Widget -->
 <div class="wa-widget" id="waWidget">
 
-<div class="wa-teaser" id="waTeaser">👋 Studying in Malaysia? Ask us anything</div>
+<div class="wa-teaser" id="waTeaser">
+<span class="wa-teaser-title">Chat with Phoenix 👋</span>
+<span class="wa-teaser-sub">Studying in Malaysia? Ask me anything</span>
+</div>
 
-<div class="wa-chat-panel" id="waChatPanel" role="dialog" aria-label="Chat with V JOIN Educational Consultancy" aria-hidden="true">
+<div class="wa-chat-panel" id="waChatPanel" role="dialog" aria-label="Chat with Phoenix from V JOIN" aria-hidden="true">
 <div class="wa-chat-header">
-<span>V JOIN Assistant</span>
+<span>Phoenix from V JOIN</span>
 <button type="button" class="wa-chat-close" id="waChatClose" aria-label="Close chat">&times;</button>
 </div>
 <div class="wa-chat-body" id="waChatBody"></div>
@@ -281,19 +284,18 @@ display:none;
 position:absolute;
 bottom:75px;
 right:0;
-max-width:220px;
+max-width:230px;
 background:white;
 color:#0c2340;
-padding:10px 14px;
-border-radius:10px;
-font-size:14px;
-font-weight:500;
+padding:12px 16px;
+border-radius:12px;
 line-height:1.4;
-box-shadow:0 4px 14px rgba(0,0,0,0.2);
+box-shadow:0 6px 20px rgba(0,0,0,0.22);
 opacity:0;
-transform:translateY(8px);
+transform-origin:bottom right;
+transform:scale(0.2) translate(25%, 35%);
 pointer-events:none;
-transition:opacity 0.4s ease, transform 0.4s ease;
+transition:opacity 0.35s ease, transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .wa-teaser::after{
@@ -309,8 +311,23 @@ transform:rotate(45deg);
 
 .wa-teaser.wa-teaser-visible{
 opacity:1;
-transform:translateY(0);
+transform:scale(1) translate(0, 0);
 pointer-events:auto;
+}
+
+.wa-teaser-title{
+display:block;
+font-weight:700;
+font-size:14.5px;
+color:#0c2340;
+}
+
+.wa-teaser-sub{
+display:block;
+font-weight:400;
+font-size:12.5px;
+color:#5b6b7c;
+margin-top:3px;
 }
 
 .wa-chat-panel{
@@ -495,12 +512,24 @@ opacity:0;
 animation:none;
 opacity:1;
 }
+.wa-teaser{
+transition:opacity 0.3s ease;
+transform:none;
+}
+.wa-teaser.wa-teaser-visible{
+transform:none;
+}
 }
 
 @media (max-width:420px){
 .wa-teaser{
-max-width:180px;
-font-size:13px;
+max-width:190px;
+}
+.wa-teaser-title{
+font-size:13.5px;
+}
+.wa-teaser-sub{
+font-size:12px;
 }
 .wa-chat-panel{
 width:calc(100vw - 32px);
@@ -536,7 +565,7 @@ sessionStorage.setItem(OPENED_KEY, "1");
 var STEPS = [
 {
 key: "education",
-question: "Hi 👋 I'm the V JOIN assistant. To get started — what's your current education level?",
+question: "👋 Hi, I'm Phoenix from V JOIN! To get started — what's your current education level?",
 options: ["High School / +2", "Bachelor's Degree", "Master's Degree", "Other"],
 ack: function(answer){
 var acks = {
