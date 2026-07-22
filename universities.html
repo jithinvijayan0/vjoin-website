@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Universities | V JOIN</title>
 
@@ -16,6 +19,7 @@
 <link rel="icon" href="images/favicon.png" sizes="32x32">
 <link rel="icon" href="images/favicon.png" sizes="16x16">
 <link rel="apple-touch-icon" href="images/favicon.png">
+<script src="nav.js" defer></script>
 </head>
 
 <body>
@@ -23,15 +27,19 @@
 <header>
 
 <!-- Logo Section -->
-<nav class="navbar">
+<nav class="navbar" aria-label="Primary navigation">
 
 <div class="nav-container">
 
 <img src="images/logo.png" class="logo" alt="V JOIN Educational Consultancy logo">
 
-<div class="nav-links">
+<button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">
+<span></span><span></span><span></span>
+</button>
+
+<div class="nav-links" id="navLinks">
 <a href="index.html">Home</a>
-<a href="universities.html">Universities</a>
+<a href="universities.html" class="active" aria-current="page">Universities</a>
 <a href="apply.html">Apply</a>
 <a href="success.html">Success Stories</a>
 <a href="contact.html">Contact</a>
@@ -197,7 +205,50 @@
 
 </section>
 <footer>
-<p>© 2026 V JOIN Educational Consultancy Pvt Ltd</p>
+
+<div class="footer-content">
+
+<div class="footer-col">
+<h3>V JOIN Educational Consultancy</h3>
+<p>Kollam, Kerala, India</p>
+</div>
+
+<div class="footer-col">
+<h3>Contact</h3>
+<p>Email: info@vjoineducation.online</p>
+<p>Phone (India): +91 79946 85101</p>
+<p>Phone (Middle East/CIS/Africa): +966 50 969 1934</p>
+</div>
+
+<div class="footer-col">
+<h3>Quick Links</h3>
+<a href="index.html">Home</a>
+<a href="universities.html">Universities</a>
+<a href="apply.html">Apply</a>
+<a href="success.html">Success Stories</a>
+<a href="contact.html">Contact</a>
+</div>
+
+</div>
+
+<p class="footer-bottom">© 2026 V JOIN Educational Consultancy Pvt Ltd</p>
+
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@type": "LocalBusiness",
+"name": "V JOIN Educational Consultancy",
+"email": "info@vjoineducation.online",
+"telephone": "+91-79946-85101",
+"address": {
+"@type": "PostalAddress",
+"addressLocality": "Kollam",
+"addressRegion": "Kerala",
+"addressCountry": "IN"
+}
+}
+</script>
+
 </footer>
 
 <script>
