@@ -367,7 +367,7 @@ Course: ${data.course}`;
     try { sessionStorage.setItem(VJ_OPENED_KEY, "1"); } catch (e) {}
   }
 
-  const vjAnswers = { education: "", program: "", language: "" };
+  const vjAnswers = { name: "", education: "", program: "", language: "" };
   let vjStarted = false;
   const vjBody = document.getElementById('vj-wa-body');
 
@@ -501,9 +501,19 @@ Course: ${data.course}`;
 
   function vjStartFlow() {
     vjShowTyping(() => {
-      vjBotBubble("👋 Hi! I'm here to connect you with V-JOIN. Just 3 quick questions, then I'll take you straight to WhatsApp.");
-      vjShowTyping(() => vjAskEducation(), 600);
+      vjBotBubble("👋 Hi! I'm here to connect you with V-JOIN. Just a few quick questions, then I'll take you straight to WhatsApp.");
+      vjShowTyping(() => vjAskName(), 600);
     }, 500);
+  }
+
+  function vjAskName() {
+    vjBotBubble("First, what's your name?");
+    vjRenderTextInput("Type your name...", (text) => {
+      vjAnswers.name = text;
+      vjUserBubble(text);
+      document.querySelector('.vj-text-row')?.remove();
+      vjShowTyping(() => vjAskEducation(), 600);
+    });
   }
 
   function vjAskEducation() {
@@ -573,10 +583,11 @@ Course: ${data.course}`;
   }
 
   function vjFinish() {
-    vjBotBubble("✅ Thanks! Tap below to continue on WhatsApp — our team will pick up right where we left off.");
+    vjBotBubble("✅ Thanks, " + vjAnswers.name + "! Tap below to continue on WhatsApp — our team will pick up right where we left off.");
 
     const message =
       "Hi V-JOIN! I'm interested in studying in Malaysia.\n" +
+      "🙋 Name: " + vjAnswers.name + "\n" +
       "🎓 Latest education: " + vjAnswers.education + "\n" +
       "📚 Program interested in: " + vjAnswers.program + "\n" +
       "💬 Preferred language: " + vjAnswers.language;
